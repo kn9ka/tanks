@@ -1,15 +1,27 @@
 {
-  "name": "chat-example",
-  "version": "0.0.0",
-  "description": "A chat example to showcase how to use `socket.io` with a static `express` server with `async` for control flow.",
+  "name": "Tanks",
+  "version": "0.0.1",
+  "description": "Tanks game",
   "main": "app.js",
   "repository": "",
-  "author": "Mostafa Eweda <mo.eweda@gmail.com>",
+  "author": "knyaka",
+  "license": "MIT",
   "scripts": {
     "start": "node ./bin/start"
   },
   "dependencies": {
     "async": "^0.2.10",
-    "socket.io": "^0.9.19"
+    "babel-core": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "connect-redis": "^3.3.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "express-session": "^1.15.3",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "redis": "^2.7.1",
+    "socket.io": "^1.3.7"
   }
 }

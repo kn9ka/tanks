@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+// enables ECMAScript 5 (ES5) features. Doesn't support IE 9- :D
+'use strict';
+
+// enables ES6 ('import'.. etc) in Node
+require('babel-core/register')
+require('babel-polyfill')
+
+const app = require("../app")
