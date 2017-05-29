@@ -1,8 +1,7 @@
-let WIDTH = 1100
-let HEIGHT = 580
+import gameSettings from '../../config/settings'
 
-class gameServer{
-
+module.exports = class gameServer {
+	
 	constructor(tanks, balls, lastBallId) {
 		this.tanks = []
 		this.balls = []
@@ -36,6 +35,9 @@ class gameServer{
 	
 	syncBalls() {
 		let self = this
+		let WIDTH = gameSettings.ARENA_WIDTH
+		let HEIGHT = gameSettings.ARENA_HEIGHT
+	
 		//Detect when ball is out of bounds
 		this.balls.forEach( ball => {
 			self.detectCollision(ball)
@@ -92,5 +94,3 @@ class gameServer{
 		}
 	}
 }
-
-module.exports = gameServer

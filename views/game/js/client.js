@@ -1,5 +1,6 @@
 var WIDTH = 1100;
 var HEIGHT = 580;
+// This IP is hardcoded to my server, replace with your own
 var socket = io.connect();
 var game = new Game('#arena', WIDTH, HEIGHT, socket);
 var selectedTank = 1;
@@ -49,7 +50,7 @@ $(window).on('beforeunload', function(){
 });
 
 function joinGame(tankName, tankType, socket){
-	if(tankName != ''){	
+	if(tankName != ''){
 		$('#prompt').hide();
 		socket.emit('joinGame', {id: tankName, type: tankType});
 	}
