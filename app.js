@@ -5,18 +5,24 @@ import express from 'express'
 import logger from 'morgan'
 import session from 'express-session'
 import passport from 'passport'
+import mongoose from 'mongoose';
 
-/* class dependencies */
+/* class & routes dependencies */
 import gameServer from './models/client/gameserver'
 import Ball from './models/client/ball'
+import index from './routes/routes'
 
+/* db connect */
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/' + 'panzer')
+const MongoStore = require("connect-mongo")(session)
+console.log(':: connected to database ::')
 
 const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min;}
 const TANK_INIT_HP = 100
 let counter = 0
 
 const app = express()
-const router = express.Router()
 const game = new gameServer()
 const RedisStore = require("connect-redis")(session)
 let sessionStore = new RedisStore({host: 'localhost', port: 6379 })
@@ -25,10 +31,10 @@ require('./config/passport')
 
 /* server */
 app.use(logger('dev'))
-app.use(express.static(__dirname + '/views'))
+app.set('view engine', 'pug')
 
 app.use(session ({
-	store: sessionStore,
+	store: new MongoStore({mongooseConnection: mongoose.connection}),
 	secret: 'mysupersecret',
 	resave: true,
 	saveUninitialized: true,
@@ -38,17 +44,14 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(passport.initialize())  
 app.use(passport.session())
 
-app.get('/auth/google', passport.authenticate('google', {scope: ['profile','email']}));
-app.get('/auth/google/callback', passport.authenticate('google', {
-	successRedirect: '/game',
-	failureRedirect: '/' }));
-
+/* routes */
+app.use('/', index)
+app.use(express.static(path.join(__dirname,'views')))
 
 const server = app.listen(process.env.PORT || 8080, () => {
 	let port = server.address().port
 	console.log(':: panzers-knyaka.c9users.io :: port => %s \n', port)
 })
-
 
 const io = require('socket.io')(server)
 
