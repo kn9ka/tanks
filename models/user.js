@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 
+
 const userSchema = mongoose.Schema ({
     local: {
         username: String,
@@ -14,11 +15,11 @@ const userSchema = mongoose.Schema ({
     }
 })
 
-userSchema.methods.generateHash = function(password){
-	return bcrypt.hashSync(password, bcrypt.genSaltSync(9));
+userSchema.methods.generateHash = function (password) {
+	return bcrypt.hashSync(password, bcrypt.genSaltSync(5));
 }
 
-userSchema.methods.validPassword = function(password){
+userSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.local.password);
 }
 

@@ -1,11 +1,12 @@
 /* module dependencies */
 import path from 'path'
-import bodyParser from 'body-parser';
+import bodyParser from 'body-parser'
 import express from 'express'
 import logger from 'morgan'
 import session from 'express-session'
 import passport from 'passport'
 import mongoose from 'mongoose';
+import slashes from 'connect-slashes'
 
 /* class & routes dependencies */
 import gameServer from './models/client/gameserver'
@@ -24,8 +25,6 @@ let counter = 0
 
 const app = express()
 const game = new gameServer()
-const RedisStore = require("connect-redis")(session)
-let sessionStore = new RedisStore({host: 'localhost', port: 6379 })
 
 require('./config/passport')
 
@@ -45,8 +44,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 /* routes */
-app.use('/', index)
 app.use(express.static(path.join(__dirname,'views')))
+app.use(slashes())
+app.use('/', index)
 
 const server = app.listen(process.env.PORT || 8080, () => {
 	let port = server.address().port

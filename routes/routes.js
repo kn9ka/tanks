@@ -27,8 +27,6 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 router.get('/profile', isLoggedIn, (req, res) => {
 	res.render('profile', { user: req.user })
-	console.log(req.user)
-	
 })
 
 router.get('/logout', (req, res) => {
