@@ -19,6 +19,7 @@ mongoose.connect('mongodb://localhost/' + 'panzer')
 const MongoStore = require("connect-mongo")(session)
 console.log(':: connected to database ::')
 
+/* constants and others */
 const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min;}
 const TANK_INIT_HP = 100
 let counter = 0
@@ -101,6 +102,10 @@ io.on('connection', client => {
 		console.log(tankId + ' has left the game')
 		game.removeTank(tankId)
 		client.broadcast.emit('removeTank', tankId)
+	})
+	
+	client.on('showmsg', data => {
+		console.log('event handle')
 	})
 	
 })

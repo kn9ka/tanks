@@ -22,6 +22,7 @@ socket.on('removeTank', function(tankId){
 	game.removeTank(tankId);
 });
 
+
 $(document).ready( function(){
 
 	$('#join').click( function(){

@@ -5,7 +5,7 @@ module.exports = class gameServer {
 	constructor(tanks, balls, lastBallId) {
 		this.tanks = []
 		this.balls = []
-		this.lastBallId = []
+		this.lastBallId = 0
 	}
 	
 	addTank(tank) {
@@ -75,7 +75,6 @@ module.exports = class gameServer {
 		let gameData = {}
 		gameData.tanks = this.tanks
 		gameData.balls = this.balls
-		
 		return gameData
 	}
 	
