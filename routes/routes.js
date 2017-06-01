@@ -12,8 +12,8 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', passport.authenticate('local-login', {
-		successRedirect: '/profile',
-		failureRedirect: '/login',
+	successRedirect: '/profile',
+	failureRedirect: '/login',
 }))
 
 router.get('/signup', (req, res) => {
@@ -21,8 +21,8 @@ router.get('/signup', (req, res) => {
 })
 
 router.post('/signup', passport.authenticate('local-signup', {
-		successRedirect: '/profile',
-		failureRedirect: '/login',
+	successRedirect: '/profile',
+	failureRedirect: '/login',
 }))
 
 router.get('/profile', isLoggedIn, (req, res) => {
@@ -47,10 +47,9 @@ router.get('/auth/google/callback', passport.authenticate('google', {
 
 export default router
 
-function isLoggedIn(req, res, next) {
+function isLoggedIn (req, res, next){
 	if(req.isAuthenticated()){
 		return next();
 	}
 	res.redirect('/');
 }
-

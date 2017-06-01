@@ -5,6 +5,7 @@ module.exports = class gameServer {
 	constructor(tanks, balls, lastBallId) {
 		this.tanks = []
 		this.balls = []
+		this.hits = []
 		this.lastBallId = 0
 	}
 	
@@ -58,23 +59,27 @@ module.exports = class gameServer {
 		this.tanks.forEach( tank => {
 			if (tank.id != ball.ownerId 
 				&& Math.abs(tank.x - ball.x) <30
-				&& Math.abs(tank.y - ball.y) < 30){
+				&& Math.abs(tank.y - ball.y) < 30) {
 					//Hit tank
 					self.hurtTank(tank)
 					ball.out = true
 					ball.exploding = true
+					
+					let hit = {ballOwner: ball.ownerId, tankOwner: tank.id}
+					this.hits.push (hit)
 				}
 		})
 	}
 	
 	hurtTank (tank) {
-		tank.hp -= 2
+		tank.hp -= 50
 	}
 	
 	getData () {
 		let gameData = {}
 		gameData.tanks = this.tanks
 		gameData.balls = this.balls
+		gameData.hits = this.hits
 		return gameData
 	}
 	

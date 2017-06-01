@@ -5,7 +5,7 @@ import express from 'express'
 import logger from 'morgan'
 import session from 'express-session'
 import passport from 'passport'
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 import slashes from 'connect-slashes'
 
 /* class & routes dependencies */
@@ -14,13 +14,13 @@ import Ball from './models/client/ball'
 import index from './routes/routes'
 
 /* db connect */
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost/' + 'panzer')
 const MongoStore = require("connect-mongo")(session)
 console.log(':: connected to database ::')
 
 /* constants and others */
-const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min;}
+const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min}
 const TANK_INIT_HP = 100
 let counter = 0
 
@@ -40,6 +40,7 @@ app.use(session ({
 	saveUninitialized: true,
 	cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
 }))
+
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(passport.initialize())  
 app.use(passport.session())
@@ -64,13 +65,13 @@ io.on('connection', client => {
 	client.on('joinGame', tank => {
 		console.log(tank.id + ' joined the game')
 
-		var initX = getRandomInt(40, 900)
-		var initY = getRandomInt(40, 500)
+		let initX = getRandomInt(40, 900) 
+		let initY = getRandomInt(40, 500) 
 		// client => server: hey, I need tank.
 		client.emit('addTank', { id: tank.id, type: tank.type, isLocal: true, x: initX, y: initY, hp: TANK_INIT_HP })
 		// server => add new tank please
 		client.broadcast.emit('addTank', { id: tank.id, type: tank.type, isLocal: false, x: initX, y: initY, hp: TANK_INIT_HP} )
-		game.addTank({ id: tank.id, type: tank.type, hp: TANK_INIT_HP});
+		game.addTank({ id: tank.id, type: tank.type, hp: TANK_INIT_HP})
 	})
 
 	client.on('sync', data => {
@@ -92,8 +93,8 @@ io.on('connection', client => {
 		counter ++
 	})
 
-	client.on('shoot', ball => {
-		var ball = new Ball(game.lastBallId, ball.ownerId, ball.alpha, ball.x, ball.y)
+	client.on('shoot', bullet => {
+		let ball = new Ball(game.lastBallId, bullet.ownerId, bullet.alpha, bullet.x, bullet.y)
 		game.increaseLastBallId()
 		game.addBall(ball)
 	})
@@ -103,9 +104,4 @@ io.on('connection', client => {
 		game.removeTank(tankId)
 		client.broadcast.emit('removeTank', tankId)
 	})
-	
-	client.on('showmsg', data => {
-		console.log('event handle')
-	})
-	
 })
