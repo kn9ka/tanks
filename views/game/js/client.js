@@ -1,4 +1,4 @@
-let WIDTH = 1100
+let WIDTH = 800
 let HEIGHT = 500 
 let socket = io.connect()
 let game = new Arena('#arena', WIDTH, HEIGHT, socket)
@@ -28,7 +28,6 @@ $(document).ready( () => {
 		joinGame(tankName, selectedTank, socket)
 	})
 	
-
 	$('#tank-name').keyup( (e) => {
 		tankName = $('#tank-name').val()
 		let k = e.keyCode || e.which
@@ -36,22 +35,31 @@ $(document).ready( () => {
 			joinGame(tankName, selectedTank, socket)
 		}
 	})
-
-	$('ul.tank-selection li').click( () => {
+	// исправить function на => когда это пофиксится
+	$('ul.tank-selection li').click( function (){
 		$('.tank-selection li').removeClass('selected')
 		$(this).addClass('selected')
 		selectedTank = $(this).data('tank')
-	})
+	});
 
+	$('ul.bullet-selection li').click( function (){
+		$('.bullet-selection li').removeClass('selected')
+		$(this).addClass('selected')
+		selectedBullet = $(this).data('bullet')
+		socket.emit('bulletChange', selectedBullet)
+	})
+	
 })
 
-$(window).on('beforeunload', () => {
+$(window).on('beforeunload', function() {
+	console.log('unload')
 	socket.emit('leaveGame', tankName)
 })
 
 joinGame = (tankName, tankType, socket) => {
 	if(tankName != '') {
 		$('#prompt').hide()
+		$('#headbar').hide()
 		socket.emit('joinGame', {id: tankName, type: tankType})
 	}
 }

@@ -8,9 +8,6 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/tanks.css">
 	<link rel="shortcut icon" href="img/icon.png">
-	<div id="headbar" class="headbar">
-		<a href = "/profile" input id="leave" class="btn btn-primary"> Leave Game </a>
-	</div>
 </head>
 <body>
 <div id="prompt" class="name-prompt">
@@ -38,8 +35,22 @@
 
 <div id="arena" class="arena">
 </div>
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/socket.io.js"></script>
+
+<div class="bullet-select col-md-12">
+<label>Choose your bullet:</label>
+	<ul class="bullet-selection">
+		<li class="selected" data-bullet=	"1">
+			<h10> x1 damage</h10>
+		<div id="1" class="cannon-ball"></div>
+		</li>
+		<li data-bullet="2">
+			<h10> x2 damage</h10>
+		<div id="2" class="cannon-ball-gold"></div>
+		</li>
+	</ul>
+</div>
+	<script  src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="  crossorigin="anonymous"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/arena.js"></script>
 	<script type="text/javascript" src="js/client.js"></script>
 </body>

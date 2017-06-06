@@ -8,6 +8,7 @@ class Arena {
 	constructor (arenaId, w, h, socket) {
 		this.tanks = [] //Tanks (other than the local tank)
 		this.balls = []
+		this.hits = []
 		this.width = w
 		this.height = h
 		this.$arena = $(arenaId)
@@ -16,7 +17,7 @@ class Arena {
 		this.socket = socket
 		setInterval( () =>  {this.mainLoop()}, INTERVAL)
 	}
-	addTank (id, type,isLocal, x, y, hp) {
+	addTank (id, type, isLocal, x, y, hp) {
 		let t = new Tank(id, type, this.$arena, this, isLocal, x, y, hp)
 		if(isLocal){
 			this.localTank = t
@@ -24,12 +25,18 @@ class Arena {
 			this.tanks.push(t)
 		}
 	}
+	addHit (ball) {
+		this.hits.push(ball)
+	}
 	removeTank (tankId) {
 		//Remove tank object
 		this.tanks = this.tanks.filter( (t) => {return t.id != tankId} )
 		//remove tank from dom
 		$('#' + tankId).remove()
 		$('#info-' + tankId).remove()
+		
+		// отправляет статистику клиенту
+		this.socket.emit('gameover', tankId)
 	}
 	killTank (tank) {
 		tank.dead = true
@@ -41,13 +48,7 @@ class Arena {
 
 		setTimeout( () => {
 			$('#expl' + tank.id).remove()
-		}, 1000)
-		
-		/* нарисовал таблицу результатов */
-		// спрятал арену
-		// создал и заполнил таблицу результатов (выстрелов / попаданий)
-		// присобачил две кнопки для захода в игру или выхода в профиль
-		
+		}, 300)
 	}
 	mainLoop () {
 		if(this.localTank != undefined){
@@ -76,7 +77,6 @@ class Arena {
 	}
 	receiveData (serverData) {
 		let game = this
-		
 		serverData.tanks.forEach( (serverTank) => {
 			
 			//Update local tank stats
@@ -97,8 +97,6 @@ class Arena {
 					clientTank.baseAngle = serverTank.baseAngle
 					clientTank.cannonAngle = serverTank.cannonAngle
 					clientTank.hp = serverTank.hp
-					clientTank.isHited = serverTank.isHited
-					clientTank.isShooted = serverTank.isShooted
 					if(clientTank.hp <= 0){
 						game.killTank(clientTank)
 					}
@@ -115,7 +113,6 @@ class Arena {
 
 		//Render balls
 		game.$arena.find('.cannon-ball').remove()
-
 		serverData.balls.forEach( (serverBall) => {
 			let b = new Ball(serverBall.id, serverBall.ownerId, game.$arena, serverBall.x, serverBall.y)
 			b.exploding = serverBall.exploding
@@ -128,7 +125,7 @@ class Arena {
 
 class Ball {
 	
-	constructor (id, ownerId, $arena, x, y, type) {
+	constructor (id, ownerId, $arena, x, y) {
 		this.id = id
 		this.ownerId = ownerId
 		this.$arena = $arena
@@ -141,7 +138,7 @@ class Ball {
 		this.$arena.append('<div id="' + this.id + '" class="cannon-ball" style="left:' + this.x + 'px"></div>')
 		this.$body = $('#' + this.id)
 		this.$body.css('left', this.x + 'px')
-		this.$body.css('top', this.y + 'px')
+		this.$body.css('top',  this.y + 'px')
 	}
 	explode () {
 		this.$arena.append('<div id="expl' + this.id + '" class="ball-explosion" style="left:' + this.x + 'px"></div>')
@@ -187,7 +184,7 @@ class Tank {
 		this.isHited = 0
 		this.isShooted = 0
 
-		this.materialize()	
+		this.materialize()
 	}
 	materialize () {
 		this.$arena.append('<div id="' + this.id + '" class="tank tank' + this.type + '"></div>')
@@ -406,15 +403,15 @@ class Tank {
 		let cannonLength = 60
 		let deltaX = cannonLength * Math.sin(serverBall.alpha)
 		let deltaY = cannonLength * Math.cos(serverBall.alpha)
-
+		
 		serverBall.ownerId = this.id
 		serverBall.x = this.x + deltaX - 5
 		serverBall.y = this.y - deltaY - 5
+		
+		// // check ball type
+		// serverBall.type = 1 // default
+		
 		this.game.socket.emit('shoot', serverBall)
-		
-		console.log('выстрелил:', this.isShooted)
-		console.log('попал:', this.isHited)
-		
 	}
 	
 }

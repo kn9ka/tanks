@@ -15,16 +15,6 @@ body{
 	padding: 10px;
 }
 
-.headbar {
-	position: absolute;
-	top: 0px;
-	left: 0%;
-	margin-left: 10px;
-	width: 400px;
-	z-index: 2;
-	padding: 10px;
-}
-
 .arena{
 	margin: 10px auto;
 	background-color: white;
@@ -67,6 +57,16 @@ body{
 		 -o-border-radius: 5px;
 			border-radius: 5px;	
 	background-color: #5e5e5e;
+}
+.cannon-ball-gold{
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;	
+	background-color: #6d0000;
 }
 
 .ball-explosion{
@@ -156,6 +156,41 @@ body{
 }
 
 .tank-selection li.selected{
+	border: 2px solid #158cba;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;
+	border-radius: 5px;
+}
+
+.bullet-selection{
+	display: inline-block;
+	width: 350px;
+	padding: 0;
+	list-style-type: none;
+	margin: 20px auto 0 auto;
+	font-weight: bold;
+}
+.bullet-select label{
+	display: inline-block;
+	margin: 10px 0;
+	width: 100%;
+	text-align: left;
+	font-weight: bold;
+}
+
+.bullet-selection li{
+	display: inline-block;
+	float: left;
+	width: 30%;
+	text-align: center;
+	cursor: pointer;
+	border: 2px solid #eee;
+	padding: 10px 0;
+}
+
+.bullet-selection li.selected{
 	border: 2px solid #158cba;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;
