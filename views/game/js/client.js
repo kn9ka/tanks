@@ -6,7 +6,7 @@ let selectedTank = 1
 let tankName = ''
 
 socket.on('addTank', (tank) => {
-	game.addTank(tank.id, tank.type, tank.isLocal, tank.x, tank.y)
+	game.addTank(tank.id, tank.type, tank.isLocal, tank.x, tank.y, tank.hp, tank.collars)
 })
 
 socket.on('sync', (gameServerData) => {
@@ -46,13 +46,13 @@ $(document).ready( () => {
 		$('.bullet-selection li').removeClass('selected')
 		$(this).addClass('selected')
 		selectedBullet = $(this).data('bullet')
-		socket.emit('bulletChange', selectedBullet)
+		socket.emit('bulletChange', {bulletType: selectedBullet, id: tankName})
+
 	})
 	
 })
 
 $(window).on('beforeunload', function() {
-	console.log('unload')
 	socket.emit('leaveGame', tankName)
 })
 

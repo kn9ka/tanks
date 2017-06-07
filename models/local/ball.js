@@ -2,8 +2,8 @@ import gameSettings from '../../config/settings'
 
 module.exports = class Ball {
     
-        constructor (lastBallId, ownerId, alpha, x, y, type) {
-        this.id = lastBallId
+        constructor (previousId, ownerId, alpha, x, y, type) {
+        this.id = previousId
         this.ownerId = ownerId
         this.alpha = alpha // angle of shot in radians
         this.x = x
@@ -20,4 +20,5 @@ module.exports = class Ball {
         this.x += speedX
         this.y += speedY
     }
+    
 }

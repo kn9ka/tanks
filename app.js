@@ -23,6 +23,8 @@ console.log(':: connected to database ::')
 /* constants and others */
 const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min}
 const TANK_INIT_HP = 100
+
+let default_bullet_type = 1
 let counter = 0
 
 const app = express()
@@ -62,15 +64,47 @@ io.on('connection', client => {
 	console.log('User connected')
 
 	client.on('joinGame', tank => {
-		console.log(tank.id + ' joined the localGame')
+		console.log(tank.id + ' joined the Game')
 
-		let initX = getRandomInt(40, 900) 
-		let initY = getRandomInt(40, 500) 
+		let initX = getRandomInt(40, 800) 
+		let initY = getRandomInt(40, 400) 
 		// client => server: hey, I need tank.
-		client.emit('addTank', { id: tank.id, type: tank.type, isLocal: true, x: initX, y: initY, hp: TANK_INIT_HP })
+		client.emit('addTank', { 
+			id: tank.id, 
+			type: tank.type, 
+			isLocal: true, 
+			x: initX, 
+			y: initY, 
+			hp: TANK_INIT_HP, 
+			collars: {
+				currentBulletType: default_bullet_type,
+				normBulletCount: 9999, 
+				goldBulletCount: 10 },
+		})
+		
 		// server => add new tank please
-		client.broadcast.emit('addTank', { id: tank.id, type: tank.type, isLocal: false, x: initX, y: initY, hp: TANK_INIT_HP} )
-		localGame.addTank({ id: tank.id, type: tank.type, hp: TANK_INIT_HP})
+		client.broadcast.emit('addTank', { 
+			id: tank.id, 
+			type: tank.type, 
+			isLocal: false, 
+			x: initX, 
+			y: initY, 
+			hp: TANK_INIT_HP,
+			collars: {
+				currentBulletType: default_bullet_type,
+				normBulletCount: 9999, 
+				goldBulletCount: 10},
+		})
+		
+		localGame.addTank({ 
+			id: tank.id, 
+			type: tank.type, 
+			hp: TANK_INIT_HP, 
+			collars: {
+				currentBulletType: default_bullet_type,
+				normBulletCount: 9999, 
+				goldBulletCount: 10},
+		})
 	})
 
 	client.on('sync', data => {
@@ -78,9 +112,10 @@ io.on('connection', client => {
 		if(data.tank != undefined) {
 			localGame.syncTank(data.tank)
 		}
-		//update ball positions
 		
+		//update ball positions
 		localGame.syncBalls()
+		
 		//Broadcast data to clients
 		client.emit('sync', localGame.getData())
 		client.broadcast.emit('sync', localGame.getData())
@@ -92,17 +127,19 @@ io.on('connection', client => {
 		counter ++
 	})
 
-	client.on('bulletChange', bulletType => {
-		console.log('user change bullet type', bulletType)
+	client.on('bulletChange', data => {
+		default_bullet_type = data.bulletType
+		console.log('new bullet type:', data.bulletType)
+		localGame.switchBulletType (data.id, data.bulletType)
 	})
+	
 	client.on('shoot', bullet => {
-		let default_bullet_type = 10
-		let ball = new Ball(localGame.lastBallId, bullet.ownerId, bullet.alpha, bullet.x, bullet.y, default_bullet_type)
+		let ball = new Ball(localGame.previousId, bullet.ownerId, bullet.alpha, bullet.x, bullet.y, bullet.type)
 		
-		localGame.increaseLastBallId()
+		localGame.increasePreviousId()
 		localGame.addBall(ball)
 		
-		let hit = new Hit (localGame.lastBallId, bullet.ownerId, 0)
+		let hit = new Hit (localGame.previousId, bullet.ownerId, 0)
 		localGame.addHit(hit)
 	})
 
