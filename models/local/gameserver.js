@@ -1,7 +1,9 @@
 // local client methods
-
 import gameSettings from '../../config/settings'
+
 const BALL_BASIC_DAMAGE = gameSettings.BALL_BASIC_DAMAGE
+const WIDTH = gameSettings.ARENA_WIDTH
+const HEIGHT = gameSettings.ARENA_HEIGHT
 
 module.exports = class gameServer {
 	
@@ -9,7 +11,7 @@ module.exports = class gameServer {
 		this.tanks = []
 		this.balls = []
 		this.hits = []
-		this.previousId = 1
+		this.previousId = 0
 	}
 	addTank(tank) {
 		this.tanks.push(tank)
@@ -21,7 +23,6 @@ module.exports = class gameServer {
 		this.hits.push(hit)
 	}
 	removeTank(tankId) {
-		//remove tank object
 		this.tanks = this.tanks.filter( t => {return t.id != tankId} )
 	}
 	syncTank (newTankData) {
@@ -36,63 +37,62 @@ module.exports = class gameServer {
 		})
 	}
 	syncBalls() {
-		let self = this
-		let WIDTH = gameSettings.ARENA_WIDTH
-		let HEIGHT = gameSettings.ARENA_HEIGHT
-	
 		//Detect when ball is out of bounds
 		this.balls.forEach( ball => {
-			self.detectCollision(ball)
+			this.detectCollision(ball)
 			
 			if(ball.x < 0 || ball.x > WIDTH
-			|| ball.y < 0 || ball.y > HEIGHT){
+			|| ball.y < 0 || ball.y > HEIGHT) {
 				ball.out = true
 			} else {
 				ball.fly()
 			}
 		})
 	}
-	switchBulletType(tankId, bulletType) {
+	switchBallType (tankId, ballType) {
 		this.tanks.forEach( tank => {
-			if (tank.id == tankId) {
-				tank.collars.currentBulletType = bulletType
+			if (tank.id === tankId) {
+				tank.collars.currentBulletType = ballType
+			}
+		})
+	}
+	addCollar(tankId) {
+		this.tanks.forEach( tank => {
+			if(tank.id === tankId) {
+				tank.collars.goldBulletCount ++
 			}
 		})
 	}
 	detectCollision(ball) {
 		//Detect if ball collides with any tank
-		let self = this
-		
 		this.tanks.forEach( tank => {
 			if (tank.id != ball.ownerId
 				&& Math.abs(tank.x - ball.x) <30
 				&& Math.abs(tank.y - ball.y) < 30) {
 					//Hit tank
-					self.hurtTank(tank, ball.type)
+					this.hurtTank(tank, ball.type)
 					
 					ball.out = true
 					ball.exploding = true
 					
 						// write hit owner to array
 						this.hits.forEach( hit => {
-							if (hit.id == ball.id) {
+							if (hit.id === ball.id) {
 								hit.hitOwnerId = tank.id
-								
-								this.addCollar(hit.bulletOwnerId)
+								// add gold bullet to ball owner
+								this.addCollar(ball.ownerId)
 							}
 						})
 				}
 		})
 	}
-	addCollar (tankId) {
-		this.tanks.forEach( tank => {
-			if (tank.id == tankId) {
-				tank.collars.goldBulletCount ++
-			}
-		})
-	}
 	hurtTank (tank, ballType) {
-		tank.hp -= BALL_BASIC_DAMAGE * ballType // 10
+		if (ballType == undefined || ballType.isNaN) {
+			console.log('gameserver: balltype error')
+			tank.hp -= BALL_BASIC_DAMAGE
+		} else {
+			tank.hp -= BALL_BASIC_DAMAGE * ballType // 10
+		}
 	}
 	getData () {
 		let gameData = {}
@@ -109,5 +109,20 @@ module.exports = class gameServer {
 	}
 	increasePreviousId () {
 		this.previousId ++
+	}
+	controlCollars (ballOwnerId) {
+		this.tanks.forEach(tank => {
+			if (tank.id === ballOwnerId) {
+				if (tank.collars.currentBulletType === 2 && tank.collars.goldBulletCount > 0) {
+					tank.collars.goldBulletCount --
+				}
+				if (tank.collars.currentBulletType === 2 && tank.collars.goldBulletCount <= 0) {
+					tank.collars.currentBulletType = 1
+				}
+				if (tank.collars.currentBulletType === 1) {
+					tank.collars.normBulletCount --
+				}
+			}
+		})
 	}
 }

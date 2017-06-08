@@ -16,6 +16,7 @@ class Arena {
 		this.$arena.css('height', h)
 		this.socket = socket
 		setInterval( () =>  {this.mainLoop()}, INTERVAL)
+		
 	}
 	addTank (id, type, isLocal, x, y, hp, collars) {
 		let t = new Tank(id, type, this.$arena, this, isLocal, x, y, hp, collars)
@@ -77,15 +78,14 @@ class Arena {
 	}
 	receiveData (serverData) {
 		let game = this
-		console.log(serverData)
 		
 		serverData.tanks.forEach( (serverTank) => {
 			
 			//Update local tank stats
 			if(game.localTank !== undefined && serverTank.id == game.localTank.id){
 				game.localTank.hp = serverTank.hp
-				game.localTank.collars.currentBulletType = serverTank.collars.currentBulletType
-				
+				game.localTank.collars = serverTank.collars
+
 				if(game.localTank.hp <= 0){
 					game.killTank(game.localTank)
 				}
@@ -101,6 +101,7 @@ class Arena {
 					clientTank.baseAngle = serverTank.baseAngle
 					clientTank.cannonAngle = serverTank.cannonAngle
 					clientTank.hp = serverTank.hp
+					clientTank.collars = serverTank.collars
 
 					if(clientTank.hp <= 0){
 						game.killTank(clientTank)
@@ -108,6 +109,8 @@ class Arena {
 					
 					clientTank.refresh()
 					found = true
+					
+					
 				}
 			})
 			if(!found &&
@@ -118,7 +121,10 @@ class Arena {
 		})
 
 		//Render balls
+		
 		game.$arena.find('.cannon-ball').remove()
+		game.$arena.find('.cannon-ball-gold').remove()
+		
 		serverData.balls.forEach( (serverBall) => {
 			let b = new Ball(serverBall.id, serverBall.ownerId, game.$arena, serverBall.x, serverBall.y, serverBall.type)
 			b.exploding = serverBall.exploding
@@ -126,6 +132,8 @@ class Arena {
 				b.explode()
 			}
 		})
+		
+		
 	}
 }
 
@@ -143,12 +151,12 @@ class Ball {
 	}
 	materialize () {
 		
-		let divClass = 'cannon-ball'
+		var divClass = 'cannon-ball'
 		
 		if(this.type == 1) {
 			divClass = 'cannon-ball'
 		}
-		if (this.type == 2) {
+		if(this.type == 2) {
 			divClass ='cannon-ball-gold'
 		}
 		
@@ -198,8 +206,6 @@ class Tank {
 		this.isLocal = isLocal
 		this.hp = hp
 		this.dead = false
-		this.isHited = 0
-		this.isShooted = 0
 		this.collars = collars
 
 		this.materialize()
@@ -222,6 +228,7 @@ class Tank {
 		this.$info = $('#info-' + this.id)
 		this.$info.append('<div class="label">' + this.id + '</div>')
 		this.$info.append('<div class="hp-bar"></div>')
+		this.$info.append('<div class="ball-count">' + this.collars.goldBulletCount + '</div>')
 
 		this.refresh()
 
@@ -248,6 +255,9 @@ class Tank {
 
 		this.$info.css('left', (this.x) + 'px')
 		this.$info.css('top', (this.y) + 'px')
+		
+		this.$info.find('.ball-count').text(this.collars.goldBulletCount)
+		
 		if(this.isMoving()){
 			this.$info.addClass('fade')
 		} else {
@@ -411,8 +421,7 @@ class Tank {
 		if(this.dead){
 			return
 		}
-		this.bulletCheck()
-		this.isShooted ++
+		// this.bulletCheck()
 
 		//Emit ball to server
 		let serverBall = {}
@@ -430,21 +439,6 @@ class Tank {
 		serverBall.type = this.collars.currentBulletType
 		
 		this.game.socket.emit('shoot', serverBall)
-	}
-	
-	bulletCheck () {
-		if (this.collars.currentBulletType == 2 && this.collars.goldBulletCount <= 0) {
-			this.collars.currentBulletType = 1
-			this.game.socket.emit('bulletChange', {id:this.id, bulletType:this.collars.currentBulletType})
-		}
-		
-		if (this.collars.currentBulletType == 1) {
-			this.collars.normBulletCount --
-		}
-		
-		if (this.collars.currentBulletType == 2) {
-			this.collars.goldBulletCount --
-		}
 	}
 }
 

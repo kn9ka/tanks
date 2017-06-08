@@ -12,13 +12,11 @@ module.exports = class Ball {
         this.ballSpeed = gameSettings.BALL_SPEED // 10
         this.type = type
     }
-    
-    fly () {
+        fly () {
         //move to trayectory
         let speedX =  this.ballSpeed * Math.sin(this.alpha)
         let speedY = -this.ballSpeed * Math.cos(this.alpha)
         this.x += speedX
         this.y += speedY
     }
-    
 }

@@ -10,6 +10,16 @@
 	<link rel="shortcut icon" href="img/icon.png">
 </head>
 <body>
+<div id = "ballcon" class="ballcon">
+	<div class="bullet-select col-md-2">
+		<ul class="bullet-selection">
+			<li class="selected" data-bullet= "1"> simple </li>
+		</ul>
+		<ul class="bullet-selection">
+			<li data-bullet="2">premium</li>
+		</ul>	
+	</div>
+</div>
 <div id="prompt" class="name-prompt">
 	<div class="input-group">
 		<input id="tank-name" type="text" class="form-control" placeholder="Name your tank" autocomplete="off">
@@ -33,22 +43,8 @@
 		</div>
 </div>
 
-<div id="arena" class="arena">
-</div>
+<div id="arena" class="arena"></div>
 
-<div class="bullet-select col-md-12">
-<label>Choose your bullet:</label>
-	<ul class="bullet-selection">
-		<li class="selected" data-bullet=	"1">
-			<h10> x1 damage</h10>
-		<div id="1" class="cannon-ball"></div>
-		</li>
-		<li data-bullet="2">
-			<h10> x2 damage</h10>
-		<div id="2" class="cannon-ball-gold"></div>
-		</li>
-	</ul>
-</div>
 	<script  src="https://code.jquery.com/jquery-3.2.1.min.js"  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="  crossorigin="anonymous"></script>
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="js/arena.js"></script>
