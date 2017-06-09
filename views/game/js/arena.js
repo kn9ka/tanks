@@ -256,8 +256,6 @@ class Tank {
 		this.$info.css('left', (this.x) + 'px')
 		this.$info.css('top', (this.y) + 'px')
 		
-		this.$info.find('.ball-count').text(this.collars.goldBulletCount)
-		
 		if(this.isMoving()){
 			this.$info.addClass('fade')
 		} else {
@@ -266,6 +264,7 @@ class Tank {
 
 		this.$info.find('.hp-bar').css('width', this.hp + 'px')
 		this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp))
+		this.$info.find('.ball-count').text(this.collars.goldBulletCount)
 	}
 	setControls () {
 		let t = this
@@ -418,10 +417,10 @@ class Tank {
 		this.cannonAngle += 90
 	}
 	shoot () {
-		if(this.dead){
+		if (this.dead) {
+			window.location.href = '/profile'
 			return
 		}
-		// this.bulletCheck()
 
 		//Emit ball to server
 		let serverBall = {}

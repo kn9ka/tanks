@@ -12,6 +12,7 @@ import slashes from 'connect-slashes'
 import gameServer from './models/local/gameserver'
 import Ball from './models/local/ball'
 import Hit from './models/local/hit'
+import stat from './models/stat'
 import index from './routes/routes'
 import gameSettings from './config/settings'
 
@@ -149,9 +150,15 @@ io.on('connection', client => {
 	})
 	
 	client.on('gameover', tankId => {
-		let clientHits = localGame.hits.filter(x => {return x.bulletOwnerId === tankId})
-		let url = '/'
-		client.emit('redirectMe', {url: url , hits: clientHits})
+		// let clientHits = localGame.hits.filter(x => {return x.bulletOwnerId === tankId})
+		// let url = '/'
+		// let newStat = new stat ({
+		// 	user: tankId,
+		// 	hits: clientHits.length,
+		// 	shoots: clientHits.hitOwnerId
+		// })
+		// newStat.save()
+		// client.emit('redirectMe', {url: url , hits: clientHits})
 	})
-	
+
 })

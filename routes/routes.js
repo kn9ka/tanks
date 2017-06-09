@@ -4,7 +4,7 @@ import passport from 'passport'
 const router = express.Router()
 
 router.get('/', (req, res) => {
-    res.render('index')
+    res.render('index', {user: req.user})
 })
 
 router.get('/login', (req, res) => {
@@ -29,6 +29,7 @@ router.get('/profile', isLoggedIn, (req, res) => {
 	res.render('profile', { user: req.user })
 })
 
+
 router.get('/logout', (req, res) => {
     req.session.destroy()
     req.logout()
@@ -36,7 +37,14 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/game', isLoggedIn, (req, res) => {
-    res.render('game/index')
+	let username = req.user
+	if (req.user.google) {
+		username = req.user.google.email
+	} else {
+		username = req.user.local.name
+	}
+	console.log(username)
+    res.render('game/index', {user: username})
 })
 
 router.get('/auth/google', passport.authenticate('google', {scope: ['profile','email']}))

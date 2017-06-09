@@ -23,7 +23,7 @@ module.exports = class gameServer {
 		this.hits.push(hit)
 	}
 	removeTank(tankId) {
-		this.tanks = this.tanks.filter( t => {return t.id != tankId} )
+		this.tanks = this.tanks.filter( t => {return t.id != tankId})
 	}
 	syncTank (newTankData) {
 		//Sync tank with new data received from a client

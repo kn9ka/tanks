@@ -4,6 +4,7 @@ let socket = io.connect('/')
 let game = new Arena('#arena', WIDTH, HEIGHT, socket)
 let selectedTank = 1
 let tankName = ''
+let username = $('#username').text()
 
 socket
 	.on('addTank', tank => {
@@ -14,9 +15,6 @@ socket
 	})
 	.on('removeTank', tankId => {
 		game.removeTank(tankId)
-	})
-	.on('redirectMe', data => {
-		window.location.href = data.url
 	})
 
 $(document).ready( () => {
@@ -33,7 +31,6 @@ $(document).ready( () => {
 			joinGame (tankName, selectedTank, socket)
 		}
 	})
-	
 	// исправить function на => когда это пофиксится
 	$('ul.tank-selection li').click( function () {
 		$('.tank-selection li').removeClass('selected')
