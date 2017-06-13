@@ -5,18 +5,6 @@ body{
 	padding-top:80px;
 	word-wrap:break-word;
 }
-
-.name-prompt{
-	position: absolute;
-	top: 150px;
-	left: 50%;
-	margin-left: -200px;
-	width: 400px;
-	background-color: #eee;
-	z-index: 2;
-	padding: 10px;
-}
-
 .arena{
 	margin: 10px auto;
 	background-color: white;
@@ -28,6 +16,16 @@ body{
 		 -o-border-radius: 5px;
 			border-radius: 5px;
 	border-radius: 5px;
+}
+.name-prompt{
+	position: absolute;
+	top: 150px;
+	left: 50%;
+	margin-left: -200px;
+	width: 400px;
+	background-color: #eee;
+	z-index: 2;
+	padding: 10px;
 }
 
 .tank{

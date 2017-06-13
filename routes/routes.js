@@ -52,6 +52,10 @@ router.get('/auth/google', passport.authenticate('google', {scope: ['profile','e
 router.get('/auth/google/callback', passport.authenticate('google', {
 	successRedirect: '/profile',
 	failureRedirect: '/' }))
+	
+router.get('/test/', (req, res) => {
+	res.render('test')
+})
 
 export default router
 

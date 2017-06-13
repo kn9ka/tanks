@@ -160,5 +160,8 @@ io.on('connection', client => {
 		// newStat.save()
 		// client.emit('redirectMe', {url: url , hits: clientHits})
 	})
-
+	client.on('CONSOLE', () => {
+		let time = Date.now()
+		console.log('CONSOLE', time)
+	})
 })

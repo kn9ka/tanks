@@ -265,13 +265,15 @@ class Tank {
 		this.$info.find('.hp-bar').css('width', this.hp + 'px')
 		this.$info.find('.hp-bar').css('background-color', getGreenToRed(this.hp))
 		this.$info.find('.ball-count').text(this.collars.goldBulletCount)
+		
 	}
 	setControls () {
 		let t = this
 
 		/* Detect both keypress and keyup to allow multiple keys
 		 and combined directions */
-		$(document).keypress( (e) => {
+		$(document)
+		.keypress( (e) => {
 			let k = e.keyCode || e.which
 			switch(k){
 				case 119: //W
@@ -287,8 +289,8 @@ class Tank {
 					t.dir.left = true
 					break
 			}
-
-		}).keyup( (e) => {
+		})
+		.keyup( (e) => {
 			let k = e.keyCode || e.which
 			switch(k){
 				case 87: //W
@@ -304,11 +306,13 @@ class Tank {
 					t.dir.left = false
 					break
 			}
-		}).mousemove( (e) => { //Detect mouse for aiming
+		})
+		.mousemove( (e) => { //Detect mouse for aiming
 			t.mx = e.pageX - t.$arena.offset().left
 			t.my = e.pageY - t.$arena.offset().top
 			t.setCannonAngle()
-		}).click( () => {
+		})
+		.click( () => {
 			t.shoot()
 		})
 	}

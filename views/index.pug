@@ -1,55 +1,47 @@
-<!doctype html>
-<html>
-<head>
-	<title>Authentication</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		body 		{ padding-top:80px; word-wrap:break-word; }
-	</style>
-</head>
-<body>
-
-	.container
-		.jumbotron.text-center
-			h1 
-				span(class="fa fa-lock") Authentication
-			p Login or Register with: 
-		if (user)
-			a(href = "/game/", class="btn btn-primary") <span class="fa fa-gamepad" aria-hidden="true"></span> Play Game
-			a(href = "/profile/", class="btn btn-success") <span class="fa fa-user" aria-hidden="true"></span> Profile	
-			a(href = "/logout/", class="btn btn-default") <span class="fa fa-sign-out" aria-hidden="true"></span> Log out
-				
-		else
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible". content="IE=edge")
+		meta(name="viewport", content="width=device-width, initial-scale=1")
 		
-			a(href = "/login/", class="btn btn-default", aria-hidden="true") 
-				span
-					.fa.fa-user Sign In
-					
-			a(href = "/signup/", class="btn btn-default", aria-hidden="true") 
-				span
-					.fa.fa-user Sign Up
-					
-			a(href = "/auth/google/", class="btn btn-danger", aria-hidden="true") 
-				span
-				.fa.fa-google-plus Google	
-
-<div class="container">
-
-	<div class="jumbotron text-center">
-		<h1><span class="fa fa-lock"></span> Authentication</h1>
-
-		<p>Login or Register with:</p>
-		if (user)
-			<a href="/game/" class="btn btn-primary"><span class="fa fa-gamepad" aria-hidden="true"></span> Play Game </a>
-			<a href="/profile/" class="btn btn-success"><span class="fa fa-user" aria-hidden="true" ></span> Profile </a>
-			<a href="/logout/" class="btn btn-default"><span class="fa fa-sign-out" aria-hidden="true"></span> Logout </a>
-		else 
-			<a href="/login/" class="btn btn-default"><span class="fa fa-user"></span> Local Login </a>
-			<a href="/signup/" class="btn btn-default"><span class="fa fa-user"></span> Local Signup </a>
-			<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google </a>
-	</div>
-
-</div>
-</body>
-</html>
+		title Authentication
+		link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', rel='stylesheet')
+		link(href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', rel='stylesheet')
+		style
+			body { padding-top:80px; word-wrap:break-word; }
+	body
+	div(class="container")
+		div(class="jumbotron text-center")
+			h1 <span class="fa fa-lock"></span> Authentication
+			p Login or Register with:
+			if (user)
+				a(href = "/game/", class="btn btn-primary") 
+					span(class="fa fa-gamepad" aria-hidden="true")
+					|  Play Game
+				|
+				|
+				a(href = "/profile/", class="btn btn-success")
+					span(class="fa fa-user" aria-hidden="true")
+					|  Profile
+				|
+				|
+				a(href = "/logout/", class="btn btn-default")
+					span(class="fa fa-sign-out" aria-hidden="true")
+					|  Log out
+				|
+				|
+			else 
+				a(href = "/login/", class="btn btn-default")
+					span(class="fa fa-user" aria-hidden="true")
+					|  Sign In
+				|
+				|
+				a(href = "/signup/", class="btn btn-default")
+					span(class="fa fa-user" aria-hidden="true")
+					|  Sign Up
+				|
+				|
+				a(href = "/auth/google/", class="btn btn-danger")
+					span(class="fa fa-google-plus" aria-hidden="true")
+					|  Google

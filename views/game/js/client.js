@@ -4,7 +4,6 @@ let socket = io.connect('/')
 let game = new Arena('#arena', WIDTH, HEIGHT, socket)
 let selectedTank = 1
 let tankName = ''
-let username = $('#username').text()
 
 socket
 	.on('addTank', tank => {
@@ -44,7 +43,6 @@ $(document).ready( () => {
 		selectedType = $(this).data('bullet')
 		socket.emit('bulletChange', {bulletType: selectedType, id: tankName})
 	})
-	
 })
 
 $(window).on('beforeunload', function () {
@@ -56,4 +54,8 @@ joinGame = (tankName, tankType, socket) => {
 		$('#prompt').hide()
 		socket.emit('joinGame', {id: tankName, type: tankType})
 	}
+}
+
+function mouselog(event) {
+	socket.emit('CONSOLE')
 }
