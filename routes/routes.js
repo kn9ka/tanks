@@ -38,12 +38,11 @@ router.get('/logout', (req, res) => {
 
 router.get('/game', isLoggedIn, (req, res) => {
 	let username = req.user
-	if (req.user.google) {
+	if (req.user.local.username == undefined) {
 		username = req.user.google.email
 	} else {
-		username = req.user.local.name
+		username = req.user.local.username
 	}
-	console.log(username)
     res.render('game/index', {user: username})
 })
 
@@ -53,7 +52,7 @@ router.get('/auth/google/callback', passport.authenticate('google', {
 	successRedirect: '/profile',
 	failureRedirect: '/' }))
 	
-router.get('/test/', (req, res) => {
+router.get('/test', (req, res) => {
 	res.render('test')
 })
 

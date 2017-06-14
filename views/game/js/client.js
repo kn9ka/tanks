@@ -1,6 +1,8 @@
+$('#arena-stats').hide()
+let username = $('#username').text()
 let WIDTH = 1100
-let HEIGHT = 500 
-let socket = io.connect('/')
+let HEIGHT = 500
+let socket = io.connect('/', {query: "username=" + username})
 let game = new Arena('#arena', WIDTH, HEIGHT, socket)
 let selectedTank = 1
 let tankName = ''
@@ -54,8 +56,4 @@ joinGame = (tankName, tankType, socket) => {
 		$('#prompt').hide()
 		socket.emit('joinGame', {id: tankName, type: tankType})
 	}
-}
-
-function mouselog(event) {
-	socket.emit('CONSOLE')
 }

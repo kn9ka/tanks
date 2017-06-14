@@ -14,9 +14,11 @@ class Arena {
 		this.$arena = $(arenaId)
 		this.$arena.css('width', w)
 		this.$arena.css('height', h)
+		this.$arenaStats = $('#arena-stats')
+		this.$arenaStats.css('width', w)
+		this.$arenaStats.css('height', h)
 		this.socket = socket
 		setInterval( () =>  {this.mainLoop()}, INTERVAL)
-		
 	}
 	addTank (id, type, isLocal, x, y, hp, collars) {
 		let t = new Tank(id, type, this.$arena, this, isLocal, x, y, hp, collars)
@@ -36,8 +38,6 @@ class Arena {
 		$('#' + tankId).remove()
 		$('#info-' + tankId).remove()
 		
-		// отправляет статистику клиенту
-		this.socket.emit('gameover', tankId)
 	}
 	killTank (tank) {
 		tank.dead = true
@@ -88,6 +88,8 @@ class Arena {
 
 				if(game.localTank.hp <= 0){
 					game.killTank(game.localTank)
+					this.socket.emit('gameover', game.localTank.id)
+					window.location.href = '/test'
 				}
 			}
 
@@ -109,8 +111,6 @@ class Arena {
 					
 					clientTank.refresh()
 					found = true
-					
-					
 				}
 			})
 			if(!found &&
@@ -422,7 +422,7 @@ class Tank {
 	}
 	shoot () {
 		if (this.dead) {
-			window.location.href = '/profile'
+			// window.location.href = '/test'
 			return
 		}
 

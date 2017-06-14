@@ -62,13 +62,35 @@ const server = app.listen(process.env.PORT || 8080, () => {
 })
 
 const io = require('socket.io')(server)
+const Players = []
 
 /* io client handle events */
-io.on('connection', client => {
-	console.log('User connected')
 
+io.on('connection', client => {
+	
+	Players.push({
+		id: client.id, 
+		name: client.handshake.query.username,
+		tankname: '',
+		hits: 0,
+		shoots: 0,
+		accuracy: 0,
+		dead: false,
+		ingame: false
+	})
+	
+	console.log(client.handshake.query.username, " connected")
+	
 	client.on('joinGame', tank => {
 		console.log(tank.id + ' joined the Game')
+		
+		Players.forEach(player => {
+			if(player.id == client.id) {
+				player.tankname = tank.id
+				player.ingame = true
+				console.log(player.name + " joined on tankname: " + player.tankname)
+			}
+		})
 		
 		let initX = getRandomInt(40, WIDHT) 
 		let initY = getRandomInt(40, HEIGHT)
@@ -127,6 +149,12 @@ io.on('connection', client => {
 		//when the tank dies and when the balls explode
 		localGame.cleanDeadTanks()
 		localGame.cleanDeadBalls()
+		
+		Players.forEach(player => {
+			let hits = localGame.hits.filter(x => {return x.hitOwnerId && x.bulletOwnerId === player.tankname})
+			player.hits = hits.length
+		})
+		client.broadcast.emit('syncStats', Players)
 	})
 
 	client.on('bulletChange', data => {
@@ -139,8 +167,15 @@ io.on('connection', client => {
 		shootsCounter ++
 		localGame.addBall(ball)
 		
-		let hit = new Hit (shootsCounter, bullet.ownerId, 0)
+		let hit = new Hit (shootsCounter, bullet.ownerId)
 		localGame.addHit(hit)
+		
+		Players.forEach(player => {
+			if(player.tankname === bullet.ownerId) {
+				player.shoots ++
+			}
+		})
+		
 	})
 
 	client.on('leaveGame', tankId => {
@@ -150,18 +185,12 @@ io.on('connection', client => {
 	})
 	
 	client.on('gameover', tankId => {
-		// let clientHits = localGame.hits.filter(x => {return x.bulletOwnerId === tankId})
-		// let url = '/'
-		// let newStat = new stat ({
-		// 	user: tankId,
-		// 	hits: clientHits.length,
-		// 	shoots: clientHits.hitOwnerId
-		// })
-		// newStat.save()
-		// client.emit('redirectMe', {url: url , hits: clientHits})
-	})
-	client.on('CONSOLE', () => {
-		let time = Date.now()
-		console.log('CONSOLE', time)
+		Players.forEach(player => {
+			if (player.tankname === tankId) {
+				player.dead = true
+				console.log(player.tankname + ' is dead')
+				console.log(player)
+			}
+		})
 	})
 })

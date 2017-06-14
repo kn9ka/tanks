@@ -1,11 +1,23 @@
 body{
-	background-color: #ddd;
+	background-color: white;
 	font-family: Helvetica Neue, Arial;
 	overflow: hidden;
 	padding-top:80px;
 	word-wrap:break-word;
 }
 .arena{
+	margin: 10px auto;
+	background-color: white;
+	position: relative;
+	pointer-events: none;
+	border: 2px solid #eee;
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;
+	border-radius: 5px;
+}
+.arena-stats{
 	margin: 10px auto;
 	background-color: white;
 	position: relative;
