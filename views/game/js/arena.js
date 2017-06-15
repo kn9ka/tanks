@@ -89,7 +89,6 @@ class Arena {
 				if(game.localTank.hp <= 0){
 					game.killTank(game.localTank)
 					this.socket.emit('gameover', game.localTank.id)
-					window.location.href = '/test'
 				}
 			}
 

@@ -52,8 +52,8 @@ router.get('/auth/google/callback', passport.authenticate('google', {
 	successRedirect: '/profile',
 	failureRedirect: '/' }))
 	
-router.get('/test', (req, res) => {
-	res.render('test')
+router.get('/stats', isLoggedIn, (req, res) => {
+	res.render('stats')
 })
 
 export default router

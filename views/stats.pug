@@ -1,0 +1,81 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible". content="IE=edge")
+		meta(name="viewport", content="width=device-width, initial-scale=1")
+
+		
+		title Game Stats
+		script(src="https://code.jquery.com/jquery-3.2.1.min.js")
+		script(src="/socket.io/socket.io.js")
+		script(src="/game/js/stats.js")
+		
+		link(href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', rel='stylesheet')
+		link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', rel='stylesheet')
+		style.
+			.tg  {
+				border-collapse:collapse;
+				border-spacing:0;
+				border-color:#aaa;
+				margin:0px auto;
+			}
+			.tg td{
+			    font-family:Arial, sans-serif;
+			    font-size:14px;
+			    padding:10px 5px;
+			    border-style:solid;
+			    border-width:0px;
+			    overflow:hidden;
+			    word-break:normal;
+			    border-color:#aaa;
+			    color:#333;
+			    background-color:#fff;
+			    border-top-width:1px;
+			    border-bottom-width:1px;
+			}
+			.tg th{
+				font-family:Arial, sans-serif;
+				font-size:14px;
+				font-weight:bold;
+				padding:10px 5px;
+				border-style:solid;
+				border-width:0px;
+				overflow:hidden;
+				word-break:normal;
+				border-color:#aaa;
+				color:#fff;
+				background-color:#0f0f0f;
+				border-top-width:1px;
+				border-bottom-width:1px;
+			}
+			.tg .tg-yw4l{
+				vertical-align:top
+			}
+	body
+		div(class="container")
+			div(class="page-header text-center")
+				h1 <span class="fa fa-anchor"></span> Game Stats
+				a(href = "/game/", class="btn btn-primary") <span class="fa fa-gamepad" aria-hidden="true"></span> Play Game
+				|
+				|
+				a(href = "/logout/", class="btn btn-default") <span class="fa fa-sign-out" aria-hidden="true"></span> Log out
+				|
+				|
+			table(id="myTable" class="tg" style="table-layout:fixed; width: 820px" align="center")
+				colgroup
+					col(style="width 120")
+					col(style="width 120")
+					col(style="width 120")
+					col(style="width 120")
+				thead
+					tr
+						th(class="tg-yw41") User
+						th(class="tg-yw4l") Tank Name
+						th(class="tg-yw4l") Frags
+						th(class="tg-yw4l") Hits
+						th(class="tg-yw4l") Shoots
+						th(class="tg-yw4l") Accuracy
+						th(class="tg-yw4l") Status
+						
+				tbody(id="tbdata")

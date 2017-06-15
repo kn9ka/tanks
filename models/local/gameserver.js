@@ -79,6 +79,11 @@ module.exports = class gameServer {
 						this.hits.forEach( hit => {
 							if (hit.id === ball.id) {
 								hit.hitOwnerId = tank.id
+								
+								if(tank.hp <= 0) {
+									hit.isFrag = true
+								}
+								
 								// add gold bullet to ball owner
 								this.addCollar(ball.ownerId)
 							}

@@ -1,4 +1,3 @@
-$('#arena-stats').hide()
 let username = $('#username').text()
 let WIDTH = 1100
 let HEIGHT = 500

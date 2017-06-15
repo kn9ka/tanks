@@ -76,7 +76,8 @@ io.on('connection', client => {
 		shoots: 0,
 		accuracy: 0,
 		dead: false,
-		ingame: false
+		ingame: false,
+		frags: 0
 	})
 	
 	console.log(client.handshake.query.username, " connected")
@@ -152,7 +153,9 @@ io.on('connection', client => {
 		
 		Players.forEach(player => {
 			let hits = localGame.hits.filter(x => {return x.hitOwnerId && x.bulletOwnerId === player.tankname})
+			let frags = localGame.hits.filter(x => {return x.isFrag == true && x.bulletOwnerId === player.tankname})
 			player.hits = hits.length
+			player.frags = frags.length
 		})
 		client.broadcast.emit('syncStats', Players)
 	})
@@ -169,7 +172,7 @@ io.on('connection', client => {
 		
 		let hit = new Hit (shootsCounter, bullet.ownerId)
 		localGame.addHit(hit)
-		
+
 		Players.forEach(player => {
 			if(player.tankname === bullet.ownerId) {
 				player.shoots ++
@@ -185,6 +188,8 @@ io.on('connection', client => {
 	})
 	
 	client.on('gameover', tankId => {
+		console.log('socket fetched')
+		console.log(tankId)
 		Players.forEach(player => {
 			if (player.tankname === tankId) {
 				player.dead = true
