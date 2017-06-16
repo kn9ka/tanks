@@ -1,0 +1,52 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		meta(http-equiv="X-UA-Compatible". content="IE=edge")
+		meta(name="viewport", content="width=device-width, initial-scale=1")
+
+		title Game Stats
+		
+		script(src="https://code.jquery.com/jquery-3.2.1.min.js")
+		script(src="/socket.io/socket.io.js")
+		script(src='/game/js/sort/tablesort.js')
+		script(src='/game/js/sort/sorts/tablesort.number.js')
+		
+		link(href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', rel='stylesheet')
+		link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', rel='stylesheet')
+		link(href='/game/css/stats.css' rel='stylesheet')
+		link(href='/game/img/icon.png', rel='shortcut icon')
+		
+	body
+		div(class="container")
+			div(class="page-header text-center")
+				h1 
+					span(class="fa fa-anchor")
+					|  Game Stats
+				a(href = "/game/", class="btn btn-primary") 
+					span(class="fa fa-gamepad" aria-hidden="true")
+					|  Play Game
+				|
+				|
+				a(href = "/profile/", class="btn btn-success") 
+					span(class="fa fa-user" aria-hidden="true")
+					|  Profile
+				|
+				|
+				a(href = "/logout/", class="btn btn-default") 
+					span(class="fa fa-sign-out" aria-hidden="true")
+					| Log out
+				|
+				|
+			table(id="game-stats" class="tg" style="table-layout:fixed; width: 820px" align="center")
+				thead
+					tr
+						th(class="tg-yw41" width="180px" style="text-align:center;") User
+						th(class="tg-yw4l") Tank Name
+						th(class="tg-yw4l" aria-sort="descending" data-sort-default="") Frags
+						th(class="tg-yw4l") Hits
+						th(class="tg-yw4l") Shoots
+						th(class="tg-yw4l") Accuracy
+						th(class="tg-yw4l") Status
+				tbody(id="tbdata")
+		script(src="/game/js/stats.js")

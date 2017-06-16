@@ -3,32 +3,23 @@ import passport from 'passport'
 
 const router = express.Router()
 
+
 router.get('/', (req, res) => {
-    res.render('index', {user: req.user})
+    res.render('index', {user: req.user}) // user already logged in?
 })
 
 router.get('/login', (req, res) => {
-    res.render('login')
+    res.render('user/login')
 })
-
-router.post('/login', passport.authenticate('local-login', {
-	successRedirect: '/profile',
-	failureRedirect: '/login',
-}))
 
 router.get('/signup', (req, res) => {
-    res.render('signup')
+    res.render('user/signup')
 })
 
-router.post('/signup', passport.authenticate('local-signup', {
-	successRedirect: '/profile',
-	failureRedirect: '/login',
-}))
 
 router.get('/profile', isLoggedIn, (req, res) => {
-	res.render('profile', { user: req.user })
+	res.render('user/profile', { user: req.user })
 })
-
 
 router.get('/logout', (req, res) => {
     req.session.destroy()
@@ -37,8 +28,8 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/game', isLoggedIn, (req, res) => {
-	let username = req.user
-	if (req.user.local.username == undefined) {
+	let username
+	if (req.user.local.username === undefined) {
 		username = req.user.google.email
 	} else {
 		username = req.user.local.username
@@ -46,15 +37,26 @@ router.get('/game', isLoggedIn, (req, res) => {
     res.render('game/index', {user: username})
 })
 
+router.get('/stats', isLoggedIn, (req, res) => {
+	res.render('game/stats')
+})
+
 router.get('/auth/google', passport.authenticate('google', {scope: ['profile','email']}))
 
 router.get('/auth/google/callback', passport.authenticate('google', {
 	successRedirect: '/profile',
-	failureRedirect: '/' }))
-	
-router.get('/stats', isLoggedIn, (req, res) => {
-	res.render('stats')
-})
+	failureRedirect: '/' 
+}))
+
+router.post('/login', passport.authenticate('local-login', {
+	successRedirect: '/profile',
+	failureRedirect: '/login',
+}))
+
+router.post('/signup', passport.authenticate('local-signup', {
+	successRedirect: '/profile',
+	failureRedirect: '/login',
+}))
 
 export default router
 

@@ -1,5 +1,6 @@
 let socket = io.connect('/', {query: "username=stats"})
 let serverStatistic = []
+let table = new Tablesort(document.getElementById('game-stats'));
 
 class playerStats {
     constructor(id, name, tankname, shoots, hits, frags){
@@ -16,6 +17,7 @@ class playerStats {
 
 $(document).ready(function () {
     socket.on('syncStats', data => {
+        table.refresh()
         data.forEach(player => {
             let found = false
             if(player.name !== 'stats' && player.ingame) {

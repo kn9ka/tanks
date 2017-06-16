@@ -8,11 +8,12 @@ import passport from 'passport'
 import mongoose from 'mongoose'
 import slashes from 'connect-slashes'
 
+/* controllers */
+import gameServer from './controllers/gameserver'
+
 /* class & routes dependencies */
-import gameServer from './models/local/gameserver'
-import Ball from './models/local/ball'
-import Hit from './models/local/hit'
-import stat from './models/stat'
+import Ball from './models/ball'
+import Hit from './models/hit'
 import index from './routes/routes'
 import gameSettings from './config/settings'
 
@@ -20,11 +21,10 @@ import gameSettings from './config/settings'
 mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost/' + 'panzer')
 const MongoStore = require("connect-mongo")(session)
-console.log(':: connected to database ::')
 
 /* constants and others */
 const getRandomInt = (min, max) => { return Math.floor(Math.random() * (max - min)) + min}
-const TANK_INIT_HP = 100
+const TANK_INIT_HP = gameSettings.TANK_INIT_HP
 const WIDHT = gameSettings.ARENA_WIDTH
 const HEIGHT = gameSettings.ARENA_HEIGHT
 
@@ -34,8 +34,7 @@ let shootsCounter = 0
 /* app */
 const app = express()
 const localGame = new gameServer()
-
-require('./config/passport')
+require('./controllers/passport')
 
 /* server */
 app.use(logger('dev'))
@@ -188,13 +187,10 @@ io.on('connection', client => {
 	})
 	
 	client.on('gameover', tankId => {
-		console.log('socket fetched')
-		console.log(tankId)
 		Players.forEach(player => {
 			if (player.tankname === tankId) {
 				player.dead = true
 				console.log(player.tankname + ' is dead')
-				console.log(player)
 			}
 		})
 	})

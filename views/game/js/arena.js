@@ -78,7 +78,7 @@ class Arena {
 	}
 	receiveData (serverData) {
 		let game = this
-		
+		console.log(serverData)
 		serverData.tanks.forEach( (serverTank) => {
 			
 			//Update local tank stats
