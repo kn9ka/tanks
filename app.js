@@ -12,6 +12,7 @@ import slashes from 'connect-slashes'
 import gameServer from './controllers/gameserver'
 
 /* class & routes dependencies */
+import Player from './models/player'
 import Ball from './models/ball'
 import Hit from './models/hit'
 import index from './routes/routes'
@@ -28,7 +29,6 @@ const TANK_INIT_HP = gameSettings.TANK_INIT_HP
 const WIDHT = gameSettings.ARENA_WIDTH
 const HEIGHT = gameSettings.ARENA_HEIGHT
 
-let default_bullet_type = 1
 let shootsCounter = 0
 
 /* app */
@@ -61,75 +61,40 @@ const server = app.listen(process.env.PORT || 8080, () => {
 })
 
 const io = require('socket.io')(server)
-const Players = []
 
 /* io client handle events */
-
 io.on('connection', client => {
-	
-	Players.push({
-		id: client.id, 
-		name: client.handshake.query.username,
-		tankname: '',
-		hits: 0,
-		shoots: 0,
-		accuracy: 0,
-		dead: false,
-		ingame: false,
-		frags: 0
-	})
-	
-	console.log(client.handshake.query.username, " connected")
+
+	let newPlayer = new Player (client.id, client.handshake.query.username)
+	localGame.addPlayer(newPlayer)
 	
 	client.on('joinGame', tank => {
-		console.log(tank.id + ' joined the Game')
 		
-		Players.forEach(player => {
-			if(player.id == client.id) {
-				player.tankname = tank.id
-				player.ingame = true
-				console.log(player.name + " joined on tankname: " + player.tankname)
-			}
-		})
+		localGame.inGame(client.id, tank.id)
 		
 		let initX = getRandomInt(40, WIDHT) 
 		let initY = getRandomInt(40, HEIGHT)
-
-		client.emit('addTank', { 
-			id: tank.id, 
-			type: tank.type, 
-			isLocal: true, 
-			x: initX, 
-			y: initY, 
-			hp: TANK_INIT_HP, 
-			collars: {
-				currentBulletType: default_bullet_type,
-				normBulletCount: 9999, 
-				goldBulletCount: 10 },
-		})
 		
-		client.broadcast.emit('addTank', { 
-			id: tank.id, 
-			type: tank.type, 
-			isLocal: false, 
-			x: initX, 
-			y: initY, 
+		let newtank = {
+			id: tank.id,
+			type: tank.type,
+			isLocal: true,
+			x: initX,
+			y: initY,
 			hp: TANK_INIT_HP,
 			collars: {
-				currentBulletType: default_bullet_type,
-				normBulletCount: 9999, 
-				goldBulletCount: 10},
-		})
+				currentBulletType: 1,
+				normBulletCount: 0,
+				goldBulletCount: 10
+			}
+		}
 		
-		localGame.addTank({ 
-			id: tank.id, 
-			type: tank.type, 
-			hp: TANK_INIT_HP, 
-			collars: {
-				currentBulletType: default_bullet_type,
-				normBulletCount: 9999, 
-				goldBulletCount: 10},
-		})
+		client.emit('addTank', newtank)
+		localGame.addTank(newtank)
+		
+		newtank.isLocal = false
+		client.broadcast.emit('addTank', newtank)
+
 	})
 
 	client.on('sync', data => {
@@ -140,7 +105,7 @@ io.on('connection', client => {
 		
 		//update ball positions
 		localGame.syncBalls()
-		
+
 		//Broadcast data to clients
 		client.emit('sync', localGame.getData())
 		client.broadcast.emit('sync', localGame.getData())
@@ -149,14 +114,7 @@ io.on('connection', client => {
 		//when the tank dies and when the balls explode
 		localGame.cleanDeadTanks()
 		localGame.cleanDeadBalls()
-		
-		Players.forEach(player => {
-			let hits = localGame.hits.filter(x => {return x.hitOwnerId && x.bulletOwnerId === player.tankname})
-			let frags = localGame.hits.filter(x => {return x.isFrag == true && x.bulletOwnerId === player.tankname})
-			player.hits = hits.length
-			player.frags = frags.length
-		})
-		client.broadcast.emit('syncStats', Players)
+		localGame.calcStat()
 	})
 
 	client.on('bulletChange', data => {
@@ -165,19 +123,14 @@ io.on('connection', client => {
 	
 	client.on('shoot', bullet => {
 		let ball = new Ball(shootsCounter, bullet.ownerId, bullet.alpha, bullet.x, bullet.y, bullet.type)
-		localGame.controlCollars(bullet.ownerId)
-		shootsCounter ++
-		localGame.addBall(ball)
-		
 		let hit = new Hit (shootsCounter, bullet.ownerId)
-		localGame.addHit(hit)
-
-		Players.forEach(player => {
-			if(player.tankname === bullet.ownerId) {
-				player.shoots ++
-			}
-		})
 		
+		// if is hitted add gold bullet for ball hitowner
+		localGame.controlCollars(bullet.ownerId)
+		localGame.addBall(ball)
+		localGame.addHit(hit)
+		shootsCounter ++
+
 	})
 
 	client.on('leaveGame', tankId => {
@@ -187,11 +140,6 @@ io.on('connection', client => {
 	})
 	
 	client.on('gameover', tankId => {
-		Players.forEach(player => {
-			if (player.tankname === tankId) {
-				player.dead = true
-				console.log(player.tankname + ' is dead')
-			}
-		})
+		localGame.isDead(tankId)
 	})
 })

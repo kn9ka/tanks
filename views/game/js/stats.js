@@ -16,9 +16,9 @@ class playerStats {
 }
 
 $(document).ready(function () {
-    socket.on('syncStats', data => {
+    socket.on('sync', data => {
         table.refresh()
-        data.forEach(player => {
+        data.players.forEach(player => {
             let found = false
             if(player.name !== 'stats' && player.ingame) {
             // sync data

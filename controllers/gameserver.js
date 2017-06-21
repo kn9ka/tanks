@@ -9,17 +9,27 @@ export default
 
 class gameServer {
 	
-	constructor(tanks, balls, hits, previousId) {
+	constructor(tanks, balls, hits,players, previousId) {
 		this.tanks = []
 		this.balls = []
 		this.hits = []
+		this.players = []
 		this.previousId = 0
 	}
 	addTank(tank) {
 		this.tanks.push(tank)
 	}
+	addPlayer(player) {
+		this.players.push(player)
+		console.log(player.name + ' connected')
+	}
 	addBall(ball) {
 		this.balls.push(ball)
+		this.players.forEach(player => {
+			if(player.tankname === ball.ownerId) {
+				player.shoots ++
+			}
+		})
 	}
 	addHit(hit) {
 		this.hits.push(hit)
@@ -76,7 +86,7 @@ class gameServer {
 					
 					ball.out = true
 					ball.exploding = true
-					
+
 						// write hit owner to array
 						this.hits.forEach( hit => {
 							if (hit.id === ball.id) {
@@ -106,6 +116,7 @@ class gameServer {
 		gameData.tanks = this.tanks
 		gameData.balls = this.balls
 		gameData.hits = this.hits
+		gameData.players = this.players
 		return gameData
 	}
 	cleanDeadTanks () {
@@ -131,5 +142,31 @@ class gameServer {
 				}
 			}
 		})
+	}
+	inGame(playerId, tankId) {
+		this.players.forEach(player => {
+			if(player.id === playerId) {
+				player.tankname = tankId
+				player.ingame = true
+				console.log(player.name + " joined on tankname: " + player.tankname)
+			}
+		})
+	}
+	isDead(tankname) {
+		this.players.forEach(player => {
+			if (player.tankname === tankname) {
+				player.dead = true
+				console.log(player.tankname + ' is dead')
+			}
+		})
+	}
+	calcStat (){
+		this.players.forEach(player => {
+			let hits  = this.hits.filter(x => {return x.hitOwnerId && x.bulletOwnerId === player.tankname})
+			let frags = this.hits.filter(x => {return x.isFrag == true && x.bulletOwnerId === player.tankname})
+			player.hits  = hits.length
+			player.frags = frags.length
+		})
+
 	}
 }

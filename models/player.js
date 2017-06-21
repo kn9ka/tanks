@@ -1,7 +1,7 @@
 export default 
 
 class Player {
-    constructor(id, name, tankname, hits, shoots, accuracy, frags) {
+    constructor(id, name) {
         this.id = id
         this.name = name
         this.tankname = ''
