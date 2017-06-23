@@ -137,9 +137,6 @@ class gameServer {
 				if (tank.collars.currentBulletType === 2 && tank.collars.goldBulletCount <= 0) {
 					tank.collars.currentBulletType = 1
 				}
-				if (tank.collars.currentBulletType === 1) {
-					tank.collars.normBulletCount --
-				}
 			}
 		})
 	}

@@ -63,6 +63,7 @@ const server = app.listen(process.env.PORT || 8080, () => {
 const io = require('socket.io')(server)
 
 /* io client handle events */
+
 io.on('connection', client => {
 
 	let newPlayer = new Player (client.id, client.handshake.query.username)
@@ -123,23 +124,13 @@ io.on('connection', client => {
 	
 	client.on('shoot', bullet => {
 		let ball = new Ball(shootsCounter, bullet.ownerId, bullet.alpha, bullet.x, bullet.y, bullet.type)
-		let hit = new Hit (shootsCounter, bullet.ownerId)
+		let hit  = new Hit (shootsCounter, bullet.ownerId)
 		
 		// if is hitted add gold bullet for ball hitowner
 		localGame.controlCollars(bullet.ownerId)
 		localGame.addBall(ball)
 		localGame.addHit(hit)
 		shootsCounter ++
-
 	})
 
-	client.on('leaveGame', tankId => {
-		console.log(tankId + ' has left the Game')
-		localGame.removeTank(tankId)
-		client.broadcast.emit('removeTank', tankId)
-	})
-	
-	client.on('gameover', tankId => {
-		localGame.isDead(tankId)
-	})
 })

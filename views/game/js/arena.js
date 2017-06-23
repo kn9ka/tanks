@@ -78,7 +78,6 @@ class Arena {
 	}
 	receiveData (serverData) {
 		let game = this
-		console.log(serverData)
 		serverData.tanks.forEach( (serverTank) => {
 			
 			//Update local tank stats
@@ -304,6 +303,8 @@ class Tank {
 				case 65: //A
 					t.dir.left = false
 					break
+				case 32: //space
+					t.switchBulletType()
 			}
 		})
 		.mousemove( (e) => { //Detect mouse for aiming
@@ -419,6 +420,15 @@ class Tank {
 		this.cannonAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI
 		this.cannonAngle += 90
 	}
+	switchBulletType () {
+		if(this.collars.currentBulletType === 1) {
+			this.collars.currentBulletType = 2
+		} else {
+			this.collars.currentBulletType = 1
+		}
+
+		this.game.socket.emit('bulletChange', {bulletType: this.collars.currentBulletType, id: this.id})
+	}
 	shoot () {
 		if (this.dead) {
 			// window.location.href = '/test'
@@ -444,17 +454,15 @@ class Tank {
 	}
 }
 
-function debug(msg){
+const debug = (msg) => {
 	if(DEBUG){
 		console.log(msg)
 	}
 }
-
-function getRandomInt(min, max) {
+const getRandomInt = (min, max) => {
 	return Math.floor(Math.random() * (max - min)) + min
 }
-
-function getGreenToRed(percent){
+const getGreenToRed = (percent) => {
 	r = percent<50 ? 255 : Math.floor(255-(percent*2-100)*255/100)
 	g = percent>50 ? 255 : Math.floor((percent*2)*255/100)
 	return 'rgb('+r+','+g+',0)'

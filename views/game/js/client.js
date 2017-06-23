@@ -31,23 +31,13 @@ $(document).ready( () => {
 			joinGame (tankName, selectedTank, socket)
 		}
 	})
-	// исправить function на => когда это пофиксится
+	// ?????
 	$('ul.tank-selection li').click( function () {
 		$('.tank-selection li').removeClass('selected')
 		$(this).addClass('selected')
 		selectedTank = $(this).data('tank')
 	});
-
-	$('ul.bullet-selection li').click( function () {
-		$('.bullet-selection li').removeClass('selected')
-		$(this).addClass('selected')
-		selectedType = $(this).data('bullet')
-		socket.emit('bulletChange', {bulletType: selectedType, id: tankName})
-	})
-})
-
-$(window).on('beforeunload', function () {
-	socket.emit('leaveGame', tankName)
+	
 })
 
 joinGame = (tankName, tankType, socket) => {

@@ -14,13 +14,6 @@ body
 
 div(id="arena", class="arena")
 div(id="username", class="username", hidden="true") #{user}
-div(id="ballcon" class="ballcon")
-	div(class="bullet-select col-md-2")
-		ul(class="bullet-selection")
-			li(class="selected" data-bullet="1") Simple
-		ul(class="bullet-selection")
-			li(data-bullet="2") Premium
-
 div(id="prompt", class="name-prompt")
 	div(class="input-group")
 		input(id="tank-name", type="text", class="form-control", placeholder="Name your tank", autocomplete="off")
@@ -37,6 +30,26 @@ div(id="prompt", class="name-prompt")
 				img(src="img/preview-tank-2.png")
 			li(data-tank="1")
 				img(src="img/preview-tank-3.png")
+
+	div(class='control-description col-md-12')
+		label Control Description: 
+		div(class="control-description-header")
+			ul
+				strong W
+				|  - Walk Up
+			ul
+				strong S
+				|  - Walk Down
+			ul
+				strong A
+				|  - Walk Left
+			ul
+				strong D 
+				|  - Walk Right
+
+		ul(style="text-align:center; display: inline-block; margin: auto 45px;")
+			strong Space
+			|  - change bullet type
 
 script(src="https://code.jquery.com/jquery-3.2.1.min.js")
 script(src="/socket.io/socket.io.js")
